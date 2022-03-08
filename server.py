@@ -1,12 +1,13 @@
-from flask import Flask
+from datetime import datetime
+from flask import Flask, jsonify
 
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def index_page():
-    return "<h1/>Hello World!<h1>"
+@app.route("/api/time")
+def get_time():
+    return jsonify(datetime.now())
 
 
 if __name__ == '__main__':
