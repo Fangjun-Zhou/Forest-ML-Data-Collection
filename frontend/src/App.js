@@ -1,7 +1,7 @@
 import './App.css';
 import '@mui/material'
-import React, { useRef } from 'react';
-import { Routes, Route, Link } from "react-router-dom";
+import React from 'react';
+import { Routes, Route } from "react-router-dom";
 import Home from './Pages/Home';
 import Time from './Pages/Time';
 

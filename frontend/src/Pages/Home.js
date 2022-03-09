@@ -1,5 +1,5 @@
-import { Grid, Stack, Typography } from '@mui/material'
-import { Box, height } from '@mui/system'
+import { Grid, Typography } from '@mui/material'
+import { Box } from '@mui/system'
 import React, { Component } from 'react'
 
 export default class Home extends Component {
@@ -11,6 +11,11 @@ export default class Home extends Component {
                     padding: 0,
                     height: "100vh"
                 }}>
+                    <Box sx={{
+                        height: "30%"
+                    }}>
+
+                    </Box>
                     <Grid container layout={"horizontal"} columns={12}>
                         <Grid item xs={12}>
                             <Typography variant="h2" align="center">Home</Typography>
