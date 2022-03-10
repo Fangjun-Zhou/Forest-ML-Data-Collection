@@ -6,7 +6,7 @@ from typing import List, NewType
 import uuid
 
 from click import option
-from DataSet import DataSet
+from utils.DataSet import DataSet
 from exceptions.BasicExceptions import IndexOutOfRangeException, NoSuchElementException
 
 

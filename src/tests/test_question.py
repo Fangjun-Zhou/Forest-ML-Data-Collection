@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from exceptions.BasicExceptions import NoSuchElementException
+from exceptions.BasicExceptions import IndexOutOfRangeException
 from utils.DataSet import DataSet
 import pytest
 
@@ -8,7 +8,7 @@ from utils.question.QuestionSet import Question
 
 class TestQuestionGeneration:
 
-    def TestNoAvailable(self):
+    def test_no_available(self):
         dataSet = DataSet(
             ["1", "2", "3"],
             set(["1", "2", "3"]),
@@ -17,17 +17,6 @@ class TestQuestionGeneration:
             })
         )
 
-        with pytest.raises(NoSuchElementException):
+        with pytest.raises(IndexOutOfRangeException):
             question = Question.GenerateQuestion(dataSet, ["1", "2", "3"], 3)
             print(question)
-
-
-dataSet = DataSet(
-    ["1", "2", "3"],
-    set(["1", "2", "3"]),
-    DataFrame(index=["1", "2", "3"], data={
-        "ans": [1, 2, 3]
-    })
-)
-
-question = Question.GenerateQuestion(dataSet, ["1", "2", "3"], 3)
