@@ -4,6 +4,8 @@ import random
 from flask import Flask, jsonify, request, Response
 import pandas
 
+from utils.DataSet import DataSet
+
 AUDIO_DIR = "standard_set"
 
 
@@ -11,6 +13,9 @@ audioList = os.listdir(AUDIO_DIR)
 
 ansDf = pandas.read_csv("standard_ans.csv")
 ansDf = ansDf.set_index("audio")
+
+dataSet = DataSet(audioList, set(ansDf.index), ansDf)
+dataSet.answerSet
 
 app = Flask(__name__)
 
