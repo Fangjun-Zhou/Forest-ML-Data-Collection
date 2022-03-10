@@ -70,3 +70,6 @@ class Question:
         # Strip the availableOptions
         if len(availableOptions) > optionNum-1:
             availableOptions = availableOptions[0:optionNum-1]
+        availableOptions.append(answer)
+
+        return Question(audioFile, availableOptions)

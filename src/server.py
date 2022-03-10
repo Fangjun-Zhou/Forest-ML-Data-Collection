@@ -14,7 +14,7 @@ audioList = os.listdir(AUDIO_DIR)
 ansDf = pandas.read_csv("standard_ans.csv")
 ansDf = ansDf.set_index("audio")
 
-dataSet = DataSet(audioList, set(ansDf.index), ansDf)
+dataSet = DataSet(audioList, set(ansDf["ans"]), ansDf)
 dataSet.answerSet
 
 app = Flask(__name__)
