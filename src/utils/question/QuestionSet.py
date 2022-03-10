@@ -73,4 +73,9 @@ class Question:
             availableOptions = availableOptions[0:optionNum-1]
         availableOptions.append(answer)
 
+        random.shuffle(availableOptions)
+
+        # Convert the numpy int64 to int
+        availableOptions = [int(x) for x in availableOptions]
+
         return Question(audioFile, availableOptions)
