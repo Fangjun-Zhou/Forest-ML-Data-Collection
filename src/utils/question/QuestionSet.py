@@ -60,6 +60,7 @@ class Question:
         audioFile = random.choice(availableList)
 
         # Generate options
+        # TODO: Generate the 3 options by pick the top 3 result from ML modle.
         # Check the audioFile in the answer list
         if not audioFile in dataSet.answerSet.index:
             raise NoSuchElementException(

@@ -6,7 +6,7 @@ import pandas
 
 from utils.DataSet import DataSet
 
-AUDIO_DIR = "standard_set"
+AUDIO_DIR = "data/standard_set"
 
 
 audioList = os.listdir(AUDIO_DIR)
