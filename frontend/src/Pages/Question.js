@@ -18,7 +18,7 @@ export default class Question extends Component {
     }
 
     UpdateQuestion() {
-        fetch("/api/randquestion")
+        fetch("/api/randQuestion")
             .then(res => res.json())
             .then((res) => {
                 console.log(res);
@@ -40,6 +40,7 @@ export default class Question extends Component {
                     height: "100vh"
                 }}>
                     <Box sx={{ height: "10%" }}></Box>
+
                     <Typography variant='h2' align='center'>Question</Typography>
 
                     <Box sx={{ height: "10%" }}></Box>

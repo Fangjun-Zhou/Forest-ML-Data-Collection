@@ -42,7 +42,7 @@ def get_audio():
     return Response(content, content_type="audio/mpeg")
 
 
-@app.route("/api/randquestion")
+@app.route("/api/randQuestion")
 def random_question():
     global dataSet
     """Randomly generate a question
@@ -56,7 +56,7 @@ def random_question():
     return jsonify(question.GetQuestionJsonObj())
 
 
-@app.route("/api/questionset")
+@app.route("/api/questionSet")
 def random_question_set():
     """Randomly generate a set of questions
 
