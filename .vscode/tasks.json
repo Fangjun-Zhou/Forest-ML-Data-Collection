@@ -7,6 +7,11 @@
             "label": "run backend tests",
             "type": "shell",
             "command": "./run-tests.sh"
+        },
+        {
+            "label": "run backend",
+            "type": "shell",
+            "command": "python3 src/server.py"
         }
     ]
 }

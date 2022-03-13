@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from utils.question.QuestionSet import Question
+from utils.question.QuestionSet import Question, QuestionSet
 from flask import Flask, jsonify, request, Response
 import pandas
 
@@ -16,7 +16,6 @@ ansDf = pandas.read_csv(ANSWER_SET)
 ansDf = ansDf.set_index("audio")
 
 dataSet = DataSet(audioList, set(ansDf["ans"]), ansDf)
-dataSet.answerSet
 
 app = Flask(__name__)
 
@@ -54,12 +53,21 @@ def random_question():
     question = Question.GenerateQuestion(dataSet, [], 5)
     print(question)
 
-    questionDict = {
-        "audio": question.audioFile,
-        "choices": question.options,
-    }
+    return jsonify(question.GetQuestionJsonObj())
 
-    return jsonify(questionDict)
+
+@app.route("/api/questionset")
+def random_question_set():
+    """Randomly generate a set of questions
+
+    Returns:
+        Response: network response
+    """
+    global dataSet
+    questionSet = QuestionSet(dataSet)
+    questionSet.GenerateQuestions(questionNum=3, optionNum=3)
+
+    return jsonify(questionSet.GetQuestionJsonObj())
 
 
 if __name__ == '__main__':

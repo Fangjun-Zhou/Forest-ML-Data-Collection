@@ -20,10 +20,27 @@ class QuestionSet:
         # Generate a series of questions
         self.dataSet = dataSet
 
-    def GenerateQuestions(self):
-        """Generate a series of questions
+    def GetQuestionJsonObj(self):
+        """Get the json representation of the question set
         """
-        self.questions = []
+        return {
+            "uuid": self.setId,
+            "questions": [question.GetQuestionJsonObj() for question in self.questions]
+        }
+
+    def GenerateQuestions(self, questionNum=3, optionNum=3):
+        """Generate a series of questions
+
+        Args:
+            questionNum (int, optional): The number of questions in the set. Defaults to 10.
+        """
+        self.questions: List[Question] = []
+        excludeFiles = []
+        for i in range(questionNum):
+            q = Question.GenerateQuestion(
+                self.dataSet, excludeFiles, optionNum)
+            excludeFiles.append(q.audioFile)
+            self.questions.append(q)
 
 
 class Question:
@@ -39,6 +56,14 @@ class Question:
             "audio": self.audioFile,
             "options": self.options
         })
+
+    def GetQuestionJsonObj(self):
+        """Get the json representation of the question
+        """
+        return {
+            "audio": self.audioFile,
+            "choices": self.options,
+        }
 
     def GenerateQuestion(dataSet: DataSet, exclude: List[str], optionNum: int) -> 'Question':
         """Generate a question base on the provide data set
