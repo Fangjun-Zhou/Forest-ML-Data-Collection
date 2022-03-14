@@ -12,13 +12,21 @@ export default class Question extends Component {
             choices: [],
         };
         this.choiceList = createRef();
+        this.UpdateList = this.UpdateList.bind(this);
+    }
+
+    UpdateList(newChoice) {
+        console.log(newChoice);
+        this.choiceList.current.setState({
+            choices: newChoice
+        });
     }
 
     render() {
         return (
             <div>
                 <Box sx={{
-                    height: "100vh"
+                    height: "60vh"
                 }}>
                     <Grid container>
                         <Grid item xs={2}>
@@ -69,7 +77,7 @@ class ChoiceList extends Component {
             <div>
                 {
                     this.state.choices.map((choice) => (
-                        <Grid container key={choice}>
+                        <Grid container key={choice} sx={{ height: 60 }}>
 
                             <Grid item xs={4}>
 

@@ -1,11 +1,33 @@
 import { Box, Button, Typography, Grid } from '@mui/material'
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
+import Question from './Question';
+import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@emotion/react';
+
+const theme = createTheme({
+    status: {
+        danger: '#e53e3e',
+    },
+    palette: {
+        primary: {
+            main: '#7cb342',
+            darker: '#4b830d',
+        },
+        secondary: {
+            main: '#f9a825',
+            darker: '#c17900',
+        },
+        neutral: {
+            main: '#64748B',
+            contrastText: '#fff',
+        },
+    },
+});
 
 export default class QuestionSet extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            audioSrc: "/api/time",
             questions: [],
             uuid: "",
             currentIndx: 0,
@@ -15,10 +37,14 @@ export default class QuestionSet extends Component {
             }
         };
         this.UpdateQuestion = this.UpdateQuestion.bind(this);
+        this.UpdateCurrQuestion = this.UpdateCurrQuestion.bind(this);
         this.UpdateButtonState = this.UpdateButtonState.bind(this);
         this.NextQuestion = this.NextQuestion.bind(this);
         this.PrevQuestion = this.PrevQuestion.bind(this);
+        this.Submit = this.Submit.bind(this);
         this.UpdateQuestion();
+
+        this.currQuestion = createRef();
     }
 
     UpdateQuestion() {
@@ -30,7 +56,10 @@ export default class QuestionSet extends Component {
                     questions: res.questions,
                     uuid: res.uuid
                 })
+            }).then((res) => {
+                this.UpdateCurrQuestion(this.state.currentIndx);
             });
+
     }
 
     UpdateButtonState(newIndex) {
@@ -58,95 +87,128 @@ export default class QuestionSet extends Component {
         }
     }
 
+    UpdateCurrQuestion(index) {
+        console.log(this.state.questions[index].choices);
+        this.currQuestion.current.setState({
+            audioSrc: "/api/audio?name=",
+            questionFile: this.state.questions[index].audio,
+            choices: this.state.questions[index].choices
+        })
+        this.currQuestion.current.UpdateList(this.state.questions[index].choices);
+    }
+
     NextQuestion() {
-        console.log(this.state.questions.length);
         var oldIndex = this.state.currentIndx;
         if (oldIndex < this.state.questions.length - 1) {
             this.setState({
                 currentIndx: oldIndex + 1
             })
-        }
 
-        this.UpdateButtonState(oldIndex + 1);
+            this.UpdateButtonState(oldIndex + 1);
+            this.UpdateCurrQuestion(oldIndex + 1);
+        }
     }
 
     PrevQuestion() {
-        console.log(this.state.questions.length);
         var oldIndex = this.state.currentIndx;
         if (oldIndex > 0) {
             this.setState({
                 currentIndx: oldIndex - 1
             })
-        }
 
-        this.UpdateButtonState(oldIndex - 1);
+            this.UpdateButtonState(oldIndex - 1);
+            this.UpdateCurrQuestion(oldIndex - 1);
+        }
+    }
+
+    Submit() {
+        console.log("Submit.");
     }
 
     render() {
         return (
             <div>
-                <Box sx={{
-                    height: "100vh"
-                }}>
-
-                    <Box sx={{ height: "10%" }}></Box>
-
-                    <Typography variant='h2' align='center'>
-                        Question {this.state.currentIndx + 1}
-                    </Typography>
-
-                    <Box sx={{ height: "10%" }}></Box>
-
+                <ThemeProvider theme={theme}>
                     <Box sx={{
-                        display: "flex",
-                        flexFlow: "column",
-                        height: "auto",
+                        height: "100vh"
                     }}>
-                        <Typography align='center'>Content</Typography>
+
+                        <Box sx={{ height: "10%" }}></Box>
+
+                        <Typography variant='h2' align='center'>
+                            Question {this.state.currentIndx + 1}
+                        </Typography>
+
+                        <Box sx={{ height: "10%" }}></Box>
+
+                        <Box sx={{
+                            display: "flex",
+                            flexFlow: "column",
+                            height: "auto",
+                        }}>
+                            <Question ref={this.currQuestion}></Question>
+                        </Box>
+
+                        <Box sx={{
+                            position: "fixed",
+                            bottom: 0,
+                            width: "100%",
+                            height: "10%"
+                        }}>
+                            <Grid container>
+                                <Grid item xs={1}>
+
+                                </Grid>
+
+                                <Grid item xs={3}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ width: "100%" }}
+                                        onClick={this.PrevQuestion}
+                                        disabled={this.state.buttonState.prev}
+                                        color="secondary">
+                                        Previous
+                                    </Button>
+                                </Grid>
+
+                                <Grid item xs={4}>
+
+                                </Grid>
+
+                                <Grid item xs={3}>
+                                    {this.state.currentIndx < this.state.questions.length - 1 &&
+                                        <Button
+                                            variant="contained"
+                                            sx={{ width: "100%" }}
+                                            onClick={this.NextQuestion}
+                                            disabled={this.state.buttonState.next}
+                                            color="secondary">
+                                            Next
+                                        </Button>
+                                    }
+                                    {this.state.currentIndx == this.state.questions.length - 1 &&
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                width: "100%"
+                                            }}
+                                            onClick={this.Submit}
+                                            color="primary">
+                                            Submit
+                                        </Button>
+                                    }
+                                </Grid>
+
+                                <Grid item xs={1}>
+
+                                </Grid>
+                            </Grid>
+                        </Box>
                     </Box>
-
-                    <Box sx={{
-                        position: "fixed",
-                        bottom: 0,
-                        width: "100%",
-                        height: "10%"
-                    }}>
-                        <Grid container>
-                            <Grid item xs={1}>
-
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Button
-                                    variant="contained"
-                                    sx={{ width: "100%" }}
-                                    onClick={this.PrevQuestion}
-                                    disabled={this.state.buttonState.prev}>
-                                    Previous
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Button
-                                    variant="contained"
-                                    sx={{ width: "100%" }}
-                                    onClick={this.NextQuestion}
-                                    disabled={this.state.buttonState.next}>
-                                    Next
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={1}>
-
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Box>
+                </ThemeProvider>
             </div >
         )
     }
 }
+
+
