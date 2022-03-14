@@ -11,26 +11,7 @@ export default class Question extends Component {
             audioSrc: "/api/time",
             choices: [],
         };
-        this.UpdateQuestion = this.UpdateQuestion.bind(this);
-        this.UpdateQuestion();
         this.choiceList = createRef();
-        this.audioPlayer = createRef();
-    }
-
-    UpdateQuestion() {
-        fetch("/api/randQuestion")
-            .then(res => res.json())
-            .then((res) => {
-                console.log(res);
-                this.setState({
-                    audioSrc: "/api/audio?name=",
-                    questionFile: res.audio,
-                    choices: res.choices
-                });
-                this.choiceList.current.setState({
-                    choices: res.choices
-                });
-            });
     }
 
     render() {
@@ -39,30 +20,19 @@ export default class Question extends Component {
                 <Box sx={{
                     height: "100vh"
                 }}>
-                    <Box sx={{ height: "10%" }}></Box>
-
-                    <Typography variant='h2' align='center'>Question</Typography>
-
-                    <Box sx={{ height: "10%" }}></Box>
-
                     <Grid container>
-                        <Grid item xs={1}>
+                        <Grid item xs={2}>
 
                         </Grid>
 
                         <Grid item xs={8}>
                             <AudioPlayer
-                                ref={this.audioPlayer}
                                 src={this.state.audioSrc + this.state.questionFile}
                                 rounded={true}
                             />
                         </Grid>
 
                         <Grid item xs={2}>
-                            <Button onClick={this.UpdateQuestion}>Update Question</Button>
-                        </Grid>
-
-                        <Grid item xs={1}>
 
                         </Grid>
 
@@ -70,9 +40,14 @@ export default class Question extends Component {
 
                     <Box sx={{ height: "10%" }}></Box>
 
-                    <ChoiceList ref={this.choiceList} onClick={() => {
-                        this.UpdateQuestion();
-                    }}></ChoiceList>
+                    <ChoiceList
+                        ref={this.choiceList}
+                        onClick={(choice) => {
+                            console.log(choice)
+                        }}
+                        choices={this.state.choices}>
+
+                    </ChoiceList>
 
                 </Box>
             </div>
@@ -85,7 +60,7 @@ class ChoiceList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            choices: []
+            choices: props.choices
         }
     }
 
@@ -94,14 +69,20 @@ class ChoiceList extends Component {
             <div>
                 {
                     this.state.choices.map((choice) => (
-                        <Grid container>
+                        <Grid container key={choice}>
 
                             <Grid item xs={4}>
 
                             </Grid>
 
                             <Grid item xs={4}>
-                                <Button onClick={this.props.onClick} sx={{ width: "100%" }}>Sample {choice}</Button>
+                                <Button
+                                    onClick={() => {
+                                        this.props.onClick(choice)
+                                    }}
+                                    sx={{ width: "100%" }}>
+                                    Sample {choice}
+                                </Button>
                             </Grid>
 
                             <Grid item xs={4}>
