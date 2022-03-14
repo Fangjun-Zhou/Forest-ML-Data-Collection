@@ -17,7 +17,17 @@ ansDf = ansDf.set_index("audio")
 
 dataSet = DataSet(audioList, set(ansDf["ans"]), ansDf)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
+
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 
 @app.route("/api/time")
@@ -65,7 +75,7 @@ def random_question_set():
     """
     global dataSet
     questionSet = QuestionSet(dataSet)
-    questionSet.GenerateQuestions(questionNum=3, optionNum=3)
+    questionSet.GenerateQuestions(questionNum=5, optionNum=3)
 
     return jsonify(questionSet.GetQuestionJsonObj())
 
