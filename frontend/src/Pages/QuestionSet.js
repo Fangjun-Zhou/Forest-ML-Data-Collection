@@ -133,6 +133,13 @@ export default class QuestionSet extends Component {
             answers: this.state.selection,
         };
         console.log(data);
+        fetch("/api/submitQuestionSet", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        });
     }
 
     render() {
