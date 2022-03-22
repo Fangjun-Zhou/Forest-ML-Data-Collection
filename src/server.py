@@ -1,21 +1,33 @@
 from datetime import datetime
 import os
+import time
 from utils.question.QuestionSet import Question, QuestionSet
 from flask import Flask, jsonify, request, Response
 import pandas
+import sqlite3
 
 from utils.DataSet import DataSet
 
 AUDIO_DIR = "data/standard_set"
 ANSWER_SET = "data/standard_ans.csv"
 
-
+# All the available audios.
 audioList = os.listdir(AUDIO_DIR)
 
+# All the answers to the audio file.
 ansDf = pandas.read_csv(ANSWER_SET)
 ansDf = ansDf.set_index("audio")
 
 dataSet = DataSet(audioList, set(ansDf["ans"]), ansDf)
+
+dbConn = sqlite3.connect("data/distribute.db", check_same_thread=False)
+dbCursor = dbConn.cursor()
+
+if (len(dbCursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='UUID'").fetchall()) == 0):
+    dbCursor.execute("""
+    CREATE TABLE UUID (ID INTEGER PRIMARY KEY, UUID TEXT, TIMESTAMP INTEGER)
+    """)
+    dbConn.commit()
 
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 
@@ -76,6 +88,11 @@ def random_question_set():
     global dataSet
     questionSet = QuestionSet(dataSet)
     questionSet.GenerateQuestions(questionNum=5, optionNum=3)
+
+    dbCursor.execute(f"""
+    INSERT INTO UUID (UUID, TIMESTAMP) VALUES ("{questionSet.setId}", {int(time.time())})
+    """)
+    dbConn.commit()
 
     return jsonify(questionSet.GetQuestionJsonObj())
 
