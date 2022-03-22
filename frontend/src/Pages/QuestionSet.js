@@ -28,6 +28,7 @@ export default class QuestionSet extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            slection: [],
             questions: [],
             uuid: "",
             currentIndx: 0,
@@ -54,6 +55,7 @@ export default class QuestionSet extends Component {
                 console.log(res);
                 this.setState({
                     questions: res.questions,
+                    selection: Array.apply(null, Array(5)),
                     uuid: res.uuid
                 })
             }).then((res) => {
@@ -92,9 +94,11 @@ export default class QuestionSet extends Component {
         this.currQuestion.current.setState({
             audioSrc: "/api/audio?name=",
             questionFile: this.state.questions[index].audio,
-            choices: this.state.questions[index].choices
+            choices: this.state.questions[index].choices,
+            selection: this.state.selection[index],
+            index: index,
         })
-        this.currQuestion.current.UpdateList(this.state.questions[index].choices);
+        this.currQuestion.current.UpdateList(this.state.questions[index].choices, this.state.selection[index]);
     }
 
     NextQuestion() {
@@ -123,6 +127,12 @@ export default class QuestionSet extends Component {
 
     Submit() {
         console.log("Submit.");
+        var data = {
+            uuid: this.state.uuid,
+            questions: this.state.questions,
+            answers: this.state.selection,
+        };
+        console.log(data);
     }
 
     render() {
@@ -146,7 +156,12 @@ export default class QuestionSet extends Component {
                             flexFlow: "column",
                             height: "auto",
                         }}>
-                            <Question ref={this.currQuestion}></Question>
+                            <Question
+                                ref={this.currQuestion}
+                                onSelect={(index, selection) => {
+                                    console.log("Changed" + index + "to" + selection);
+                                    this.state.selection[index] = selection;
+                                }}></Question>
                         </Box>
 
                         <Box sx={{

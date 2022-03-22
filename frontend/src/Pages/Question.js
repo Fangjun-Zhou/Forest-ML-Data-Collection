@@ -1,6 +1,6 @@
 import React, { Component, createRef, useRef } from 'react'
 import AudioPlayer from 'material-ui-audio-player';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, FormControlLabel, Grid, RadioGroup, Radio, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 
 export default class Question extends Component {
@@ -10,15 +10,19 @@ export default class Question extends Component {
             questionFile: "",
             audioSrc: "/api/time",
             choices: [],
+            selection: null,
+            index: 0,
         };
+        this.onSelect = props.onSelect;
         this.choiceList = createRef();
         this.UpdateList = this.UpdateList.bind(this);
     }
 
-    UpdateList(newChoice) {
+    UpdateList(newChoice, newSelection) {
         console.log(newChoice);
         this.choiceList.current.setState({
-            choices: newChoice
+            choices: newChoice,
+            selection: newSelection
         });
     }
 
@@ -52,8 +56,13 @@ export default class Question extends Component {
                         ref={this.choiceList}
                         onClick={(choice) => {
                             console.log(choice)
+                            this.setState({
+                                selection: choice
+                            });
+                            this.onSelect(this.state.index, choice);
                         }}
-                        choices={this.state.choices}>
+                        choices={this.state.choices}
+                        selection={this.state.selection}>
 
                     </ChoiceList>
 
@@ -68,38 +77,51 @@ class ChoiceList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            choices: props.choices
+            choices: props.choices,
+            selection: props.selection
         }
     }
 
     render() {
         return (
             <div>
-                {
-                    this.state.choices.map((choice) => (
-                        <Grid container key={choice} sx={{ height: 60 }}>
+                <RadioGroup>
+                    {
+                        this.state.choices.map((choice) => (
 
-                            <Grid item xs={4}>
+                            <Grid container key={choice} sx={{ height: 60 }}>
+
+                                <Grid item xs={4}>
+
+                                </Grid>
+
+                                <Grid item xs={4}>
+
+                                    <FormControlLabel
+                                        value={choice}
+                                        label={"Sample" + choice}
+                                        control={<Radio />}
+                                        onClick={() => {
+                                            this.props.onClick(choice)
+                                            this.setState({
+                                                selection: choice,
+                                            })
+                                        }}
+                                        checked={choice == this.state.selection}
+                                        sx={{ width: "100%" }}>
+
+                                    </FormControlLabel>
+                                </Grid>
+
+                                <Grid item xs={4}>
+
+                                </Grid>
 
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <Button
-                                    onClick={() => {
-                                        this.props.onClick(choice)
-                                    }}
-                                    sx={{ width: "100%" }}>
-                                    Sample {choice}
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-
-                            </Grid>
-
-                        </Grid>
-                    ))
-                }
+                        ))
+                    }
+                </RadioGroup>
             </div>
         )
     }
