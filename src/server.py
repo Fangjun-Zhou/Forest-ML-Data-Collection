@@ -1,3 +1,4 @@
+from crypt import methods
 from datetime import datetime
 import os
 import time
@@ -26,6 +27,12 @@ dbCursor = dbConn.cursor()
 if (len(dbCursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='UUID'").fetchall()) == 0):
     dbCursor.execute("""
     CREATE TABLE UUID (ID INTEGER PRIMARY KEY, UUID TEXT, TIMESTAMP INTEGER)
+    """)
+    dbConn.commit()
+
+if (len(dbCursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='USRANSWER'").fetchall()) == 0):
+    dbCursor.execute("""
+    CREATE TABLE USRANSWER (ID INTEGER PRIMARY KEY, UUID TEXT, QUESTION TEXT, ANSWER TEXT)
     """)
     dbConn.commit()
 
@@ -95,6 +102,42 @@ def random_question_set():
     dbConn.commit()
 
     return jsonify(questionSet.GetQuestionJsonObj())
+
+
+@app.route("/api/submitQuestionSet", methods=["POST"])
+def submit():
+    answerJson = request.json
+    uuid = answerJson["uuid"]
+    print(f"UUID: {uuid}")
+    questions = [question["audio"] for question in answerJson["questions"]]
+    print(f"Questions: {questions}")
+    answers = answerJson["answers"]
+    print(f"Answers: {answers}")
+
+    # Check UUID
+    uuidRecords = dbCursor.execute(f"""
+    SELECT * FROM UUID WHERE UUID="{uuid}"
+    """).fetchall()
+    if len(uuidRecords) == 0:
+        return Response("UUID Not Recognize!", status=400)
+
+    # Check question length and answer length
+    if len(questions) != len(answers):
+        return Response("Missing Answer!", status=400)
+
+    for i in range(len(questions)):
+        dbCursor.execute(f"""
+        INSERT INTO USRANSWER (UUID, QUESTION, ANSWER) VALUES ("{uuid}", "{questions[i]}", "{answers[i]}")
+        """)
+        dbConn.commit()
+
+    # Remove UUID Record
+    dbCursor.execute(f"""
+    DELETE FROM UUID WHERE UUID="{uuid}"
+    """)
+    dbConn.commit()
+
+    return Response("Submit Succeeded")
 
 
 if __name__ == '__main__':
