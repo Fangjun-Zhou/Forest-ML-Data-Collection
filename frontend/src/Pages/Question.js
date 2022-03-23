@@ -9,7 +9,7 @@ export default class Question extends Component {
         this.state = {
             questionFile: "",
             audioSrc: "/api/time",
-            choices: [],
+            options: [],
             selection: null,
             index: 0,
         };
@@ -21,7 +21,7 @@ export default class Question extends Component {
     UpdateList(newChoice, newSelection) {
         console.log(newChoice);
         this.choiceList.current.setState({
-            choices: newChoice,
+            options: newChoice,
             selection: newSelection
         });
     }
@@ -61,7 +61,7 @@ export default class Question extends Component {
                             });
                             this.onSelect(this.state.index, choice);
                         }}
-                        choices={this.state.choices}
+                        options={this.state.options}
                         selection={this.state.selection}>
 
                     </ChoiceList>
@@ -77,7 +77,7 @@ class ChoiceList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            choices: props.choices,
+            options: props.options,
             selection: props.selection
         }
     }
@@ -87,7 +87,7 @@ class ChoiceList extends Component {
             <div>
                 <RadioGroup>
                     {
-                        this.state.choices.map((choice) => (
+                        this.state.options.map((choice) => (
 
                             <Grid container key={choice} sx={{ height: 60 }}>
 

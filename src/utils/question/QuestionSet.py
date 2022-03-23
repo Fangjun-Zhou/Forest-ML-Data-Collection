@@ -62,7 +62,7 @@ class Question:
         """
         return {
             "audio": self.audioFile,
-            "choices": self.options,
+            "options": self.options,
         }
 
     def GenerateQuestion(dataSet: DataSet, exclude: List[str], optionNum: int) -> 'Question':

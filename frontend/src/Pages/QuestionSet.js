@@ -90,15 +90,15 @@ export default class QuestionSet extends Component {
     }
 
     UpdateCurrQuestion(index) {
-        console.log(this.state.questions[index].choices);
+        console.log(this.state.questions[index].options);
         this.currQuestion.current.setState({
             audioSrc: "/api/audio?name=",
             questionFile: this.state.questions[index].audio,
-            choices: this.state.questions[index].choices,
+            options: this.state.questions[index].options,
             selection: this.state.selection[index],
             index: index,
         })
-        this.currQuestion.current.UpdateList(this.state.questions[index].choices, this.state.selection[index]);
+        this.currQuestion.current.UpdateList(this.state.questions[index].options, this.state.selection[index]);
     }
 
     NextQuestion() {
