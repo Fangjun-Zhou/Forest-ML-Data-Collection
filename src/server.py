@@ -32,7 +32,7 @@ if (len(dbCursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND 
 
 if (len(dbCursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='USRANSWER'").fetchall()) == 0):
     dbCursor.execute("""
-    CREATE TABLE USRANSWER (ID INTEGER PRIMARY KEY, UUID TEXT, QUESTION TEXT, ANSWER TEXT)
+    CREATE TABLE USRANSWER (ID INTEGER PRIMARY KEY, UUID TEXT, QUESTION TEXT, ANSWER TEXT, TIMESTAMP INTEGER)
     """)
     dbConn.commit()
 
@@ -127,7 +127,7 @@ def submit():
 
     for i in range(len(questions)):
         dbCursor.execute(f"""
-        INSERT INTO USRANSWER (UUID, QUESTION, ANSWER) VALUES ("{uuid}", "{questions[i]}", "{answers[i]}")
+        INSERT INTO USRANSWER (UUID, QUESTION, ANSWER, TIMESTAMP) VALUES ("{uuid}", "{questions[i]}", "{answers[i]}", {int(time.time())})
         """)
         dbConn.commit()
 
