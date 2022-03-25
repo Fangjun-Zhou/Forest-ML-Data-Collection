@@ -93,6 +93,9 @@ class Question:
         answer = dataSet.answerSet.at[audioFile, "ans"]
         availableOptions = [
             item for item in dataSet.options if not item == answer]
+
+        random.shuffle(availableOptions)
+
         # Strip the availableOptions
         if len(availableOptions) > optionNum-1:
             availableOptions = availableOptions[0:optionNum-1]
